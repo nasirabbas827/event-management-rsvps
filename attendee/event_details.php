@@ -163,7 +163,7 @@ mysqli_close($conn);
             margin-top: 20px;
         }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBP4cSBJ4IHPp15oyTcJgWo7kDt06Vh4jE&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_OWN_API_KEY&callback=initMap" async defer></script>
     <script>
         function initMap() {
             var eventLocation = { lat: <?php echo $event['latitude']; ?>, lng: <?php echo $event['longitude']; ?> };

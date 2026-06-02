@@ -1,114 +1,119 @@
-# Event-Management-RSVPs
+# event-management-rsvps  
 
-A lightweight PHP web application that lets event organizers create and manage events, while attendees can browse event details, RSVP, and view their reservations. The system includes separate dashboards for organizers and attendees, secure login/logout flows, and a clean responsive UI.
-
----
-
-## Overview
-
-The **Event-Management-RSVPs** project provides a simple yet functional platform for managing events and RSVP submissions. Organizers can add, edit, and delete events, upload images, and monitor attendee responses. Attendees can browse upcoming events, view detailed information, and submit or cancel RSVPs.
+A simple web‑based RSVP system that lets **organizers** create and manage events, and **attendees** view event details and submit their responses. Built with PHP and a MySQL database, the application demonstrates clean separation of concerns (organizer vs. attendee) and includes a responsive UI.
 
 ---
 
-## Features
+## Overview  
 
-- **Organizer Dashboard**
-  - Create, edit, and delete events.
-  - Upload event images.
-  - View a list of all RSVPs per event.
-- **Attendee Dashboard**
-  - Browse upcoming events.
-  - View detailed event information.
-  - Submit or cancel RSVPs.
-  - View personal RSVP history.
-- **Authentication**
-  - Secure login / logout for both organizers and attendees.
-- **Responsive UI**
-  - Clean navigation bars and styled components (`css/style.css`).
-- **Database**
-  - MySQL schema (`Database/event_db.sql`) with tables for users, events, and RSVPs.
+- **Organizers** can add, edit, and delete events, upload images, and view RSVP lists.  
+- **Attendees** can browse upcoming events, view details, and submit their RSVP status (Going / Not Going).  
+- Secure login/logout flows for both user types.  
+- Centralised configuration files (`config.php`) for easy environment setup.  
 
 ---
 
-## Tech Stack
+## Features  
 
-| Layer | Technology |
-|-------|------------|
-| Backend | PHP 7.x+ |
-| Database | MySQL |
-| Front‑end | HTML5, CSS3 (custom stylesheet), minimal JavaScript |
-| Server | Apache / Nginx (LAMP stack) |
+| ✅ | Feature |
+|---|---------|
+| ✔️ | Organizer dashboard with event CRUD operations |
+| ✔️ | Attendee dashboard to browse events and submit RSVPs |
+| ✔️ | Separate authentication for organizers and attendees |
+| ✔️ | Image upload handling for event flyers |
+| ✔️ | Responsive navigation bars (`navbar.php`) for both roles |
+| ✔️ | Centralised CSS (`css/style.css`) for a clean UI |
+| ✔️ | SQL script (`Database/event_db.sql`) to initialise the schema |
+| ✔️ | Comprehensive documentation (`Project File.docx`) |
+
+---
+
+## Tech Stack  
+
+| Component | Technology |
+|-----------|------------|
+| Backend   | PHP 8.x |
+| Database  | MySQL / MariaDB |
+| Frontend  | HTML5, CSS3 (custom stylesheet), minimal JavaScript |
+| Server    | Apache / Nginx (any LAMP stack) |
 | Version Control | Git (GitHub) |
 
 ---
 
-## Installation
+## Installation  
 
-1. **Clone the repository**
+### 1. Prerequisites  
 
-   ```bash
-   git clone https://github.com/yourusername/Event-Management-RSVPs.git
-   cd Event-Management-RSVPs
-   ```
+- PHP 8.0+ with PDO extension  
+- MySQL server  
+- Web server (Apache/Nginx) configured to serve PHP files  
+- Composer (optional, only if you add third‑party packages later)  
 
-2. **Set up the database**
+### 2. Clone the repository  
 
-   - Create a new MySQL database (e.g., `event_db`).
-   - Import the schema:
+```bash
+git clone https://github.com/yourusername/event-management-rsvps.git
+cd event-management-rsvps
+```
 
-     ```bash
-     mysql -u your_user -p event_db < Database/event_db.sql
-     ```
+### 3. Set up the database  
 
-3. **Configure the application**
+```bash
+# From the project root
+mysql -u root -p < Database/event_db.sql
+```
 
-   - Copy `config.php.example` (if provided) to `config.php` and update the credentials:
+> **Note:** The SQL script creates a database named `event_management` with the required tables (`organizers`, `attendees`, `events`, `rsvps`). Adjust the credentials in the next step if you use a different user/database name.
 
-     ```php
-     // config.php
-     define('DB_HOST', 'localhost');
-     define('DB_NAME', 'event_db');
-     define('DB_USER', 'your_user');
-     define('DB_PASS', 'your_password');
-     ```
+### 4. Configure connection settings  
 
-   - Do the same for the `attendee/config.php` and `organizer/config.php` files if they exist.
+Copy the sample config and update the placeholders:
 
-4. **Set file permissions**
+```bash
+cp config.php.example config.php
+```
 
-   ```bash
-   chmod -R 755 organizer/uploads
-   ```
+Edit `config.php` (and the duplicate files in `attendee/` and `organizer/` if you prefer per‑module configs) to match your environment:
 
-5. **Start the server**
+```php
+<?php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'event_management');
+define('DB_USER', 'YOUR_DB_USERNAME');
+define('DB_PASS', 'YOUR_DB_PASSWORD');
+?>
+```
 
-   - If using the built‑in PHP server (for development):
+### 5. Set file permissions  
 
-     ```bash
-     php -S localhost:8000
-     ```
+If you plan to upload event images, ensure the `organizer/uploads/` directory is writable:
 
-   - Or place the project in your Apache/Nginx document root.
+```bash
+chmod -R 755 organizer/uploads/
+```
 
-6. **Access the app**
+### 6. (Optional) Virtual host configuration  
 
-   - Organizer login: `http://localhost:8000/login.php` (use credentials seeded in the DB).
-   - Attendee login/registration: `http://localhost:8000/register.php`.
+For a clean URL structure, you may add a virtual host pointing the document root to the project folder. Example for Apache:
+
+```apacheconf
+<VirtualHost *:80>
+    ServerName event-management.local
+    DocumentRoot /path/to/event-management-rsvps
+
+    <Directory /path/to/event-management-rsvps>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+Remember to update your hosts file (`127.0.0.1 event-management.local`).
 
 ---
 
-## Usage
+## Usage  
 
-### Organizer Workflow
+### 1. Access the application  
 
-1. **Log in** via `login.php`.
-2. Navigate to **Organizer Dashboard** (`organizer/organizer_dashboard.php`).
-3. Use **Add Event** (`organizer/add_event.php`) to create a new event.
-4. Edit or delete events via `organizer/edit_event.php`.
-5. View RSVPs for a specific event with `organizer/view_rsvps.php`.
-
-### Attendee Workflow
-
-1. **Register** or **log in** via `register.php` / `login.php`.
-2. Browse events on the home page (`index.php`) or via the **Attendee Dashboard** (`attendee/attendee_dashboard.php`).
-3. Click an event to see details (`attendee/event_details.php
+- **Attendee portal:** `http://
